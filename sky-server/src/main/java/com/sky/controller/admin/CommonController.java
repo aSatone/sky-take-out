@@ -1,5 +1,6 @@
 package com.sky.controller.admin;
 
+import java.util.Base64;
 import com.sky.constant.MessageConstant;
 import com.sky.result.Result;
 import com.sky.utils.AliOssUtil;
@@ -44,10 +45,15 @@ public class CommonController {
             String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
             //构造新文件名称
             String objectName = UUID.randomUUID().toString() + extension;
+            // 获取文件字节流
+            byte[] fileBytes = file.getBytes();
+
+            // 如果需要将文件转为 Base64 返回
+            String base64Image = "data:image/" + extension.substring(1) + ";base64," + Base64.getEncoder().encodeToString(fileBytes);
 
             //文件的请求路径
             String filePath = aliOssUtil.upload(file.getBytes(), objectName);
-            return Result.success(filePath);
+            return Result.success(base64Image);
         } catch (IOException e) {
             log.error("文件上传失败：{}", e);
         }

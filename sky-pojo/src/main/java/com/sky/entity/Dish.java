@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.Blob;
 import java.time.LocalDateTime;
 
 /**
@@ -31,7 +32,7 @@ public class Dish implements Serializable {
     private BigDecimal price;
 
     //图片
-    private String image;
+    private byte[] image;
 
     //描述信息
     private String description;

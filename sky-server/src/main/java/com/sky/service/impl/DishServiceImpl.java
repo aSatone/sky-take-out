@@ -23,8 +23,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Blob;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.sql.rowset.serial.SerialBlob;
+import java.sql.Blob;
+import java.util.Base64;
+import java.sql.SQLException;
+
+import javax.sql.rowset.serial.SerialBlob;
 
 @Service
 @Slf4j
@@ -48,8 +56,26 @@ public class DishServiceImpl implements DishService {
     public void saveWithFlavor(DishDTO dishDTO) {
 
         Dish dish = new Dish();
-
         BeanUtils.copyProperties(dishDTO, dish);
+        // 如果有 Base64 编码的图片数据
+    if (dishDTO.getImage() != null && !dishDTO.getImage().isEmpty()) {
+        try {
+            // 移除 Base64 字符串中的空格和换行符
+            String base64Data = dishDTO.getImage().replaceFirst("data:image/\\w+;base64,", "");
+            // 1. 将 Base64 字符串解码为字节数组
+            byte[] decodedBytes = Base64.getDecoder().decode(base64Data);
+
+            // // 2. 将字节数组转换为 Blob 对象
+            // byte[] imageBlob = new SerialBlob(decodedBytes);
+            dish.setImage(decodedBytes);  // 假设 Dish 类有一个 setImage 方法
+
+        } catch (IllegalArgumentException e) {
+            log.error("Base64 解码失败", e);
+         }   
+        //  catch (SQLException e) {
+        //     log.error("转换为 Blob 失败", e);
+        // }
+    }
 
         //向菜品表插入1条数据
         dishMapper.insert(dish);
@@ -75,7 +101,7 @@ public class DishServiceImpl implements DishService {
      */
     public PageResult pageQuery(DishPageQueryDTO dishPageQueryDTO) {
         PageHelper.startPage(dishPageQueryDTO.getPage(), dishPageQueryDTO.getPageSize());
-        Page<DishVO> page = dishMapper.pageQuery(dishPageQueryDTO);
+        Page<Dish> page = dishMapper.pageQuery(dishPageQueryDTO);
         return new PageResult(page.getTotal(), page.getResult());
     }
 
@@ -139,6 +165,26 @@ public class DishServiceImpl implements DishService {
     public void updateWithFlavor(DishDTO dishDTO) {
         Dish dish = new Dish();
         BeanUtils.copyProperties(dishDTO, dish);
+            // 如果有 Base64 编码的图片数据
+    if (dishDTO.getImage() != null && !dishDTO.getImage().isEmpty()) {
+        try {
+            // 移除 Base64 字符串中的空格和换行符
+            String base64Data = dishDTO.getImage().replaceFirst("data:image/\\w+;base64,", "");
+            // 1. 将 Base64 字符串解码为字节数组
+            byte[] decodedBytes = Base64.getDecoder().decode(base64Data);
+
+            // // 2. 将字节数组转换为 Blob 对象
+            // byte[] imageBlob = new SerialBlob(decodedBytes);
+            dish.setImage(decodedBytes);  // 假设 Dish 类有一个 setImage 方法
+
+        } catch (IllegalArgumentException e) {
+            log.error("Base64 解码失败", e);
+         }   
+        //  catch (SQLException e) {
+        //     log.error("转换为 Blob 失败", e);
+        // }
+    }
+
 
         //修改菜品表基本信息
         dishMapper.update(dish);

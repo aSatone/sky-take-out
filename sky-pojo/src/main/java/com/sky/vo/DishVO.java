@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.Blob;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,7 @@ public class DishVO implements Serializable {
     //菜品价格
     private BigDecimal price;
     //图片
-    private String image;
+    private byte[] image;
     //描述信息
     private String description;
     //0 停售 1 起售

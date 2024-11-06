@@ -10,7 +10,7 @@
                 #{updateUser}, #{status})
     </insert>
 
-    <select id="pageQuery" resultType="com.sky.vo.DishVO">
+    <select id="pageQuery" resultType="com.sky.entity.Dish">
         select d.* , c.name as categoryName from dish d left outer join category c on d.category_id = c.id
         <where>
             <if test="name != null">
